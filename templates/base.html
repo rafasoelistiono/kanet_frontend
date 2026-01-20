@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block meta %} {% endblock meta %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add DOMPurify here -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}"/>
+    <style>
+        /* Menambahkan font default yang lebih baik */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="w-full max-w-sm h-[896px] bg-gradient-to-b from-blue-100 to-blue-50 text-white rounded-3xl shadow-2xl p-6 flex flex-col relative">
+        {% block content %}
+        {% endblock content %}
+    </div>
+</body>
+</html>

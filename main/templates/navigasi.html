@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="h-screen bg-gradient-to-b from-blue-100 to-blue-50 flex flex-col">
+
+    <!-- Top bar -->
+    <div class="flex items-center justify-between mb-8">
+        <a href="{% url 'main:show_main' %}" class="text-4xl font-bold text-gray-800 hover:text-gray-600 transition-colors">&lt;</a>
+        <h1 class="text-2xl font-bold text-gray-800">Navigasi</h1>
+        <img src="{% static 'images/location-icon.png' %}" alt="Location" class="w-8 h-8">
+    </div>
+
+    <!-- Main content -->
+    <div class="flex-grow flex flex-col items-center justify-center px-4 pb-24">
+
+        <!-- Stop info -->
+        <div class="w-full bg-white rounded-3xl p-6 mb-8 shadow-lg">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-black font-bold text-sm">Halte Blok M</p>
+                    <p class="text-gray-600 text-2xl font-bold mt-1">50 M</p>
+                </div>
+                <div class="text-left">
+                    <p class="text-black font-bold text-sm">• Toilet</p>
+                    <p class="text-black font-bold text-sm">• Musolla</p>
+                    <p class="text-black font-bold text-sm">• Gate A</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic screens -->
+        <div id="content" class="w-full text-center">
+            <!-- Screen 4: Lurus Terus -->
+            <div id="screen-4" class="hidden">
+                <svg class="w-32 h-32 text-blue-600 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
+                </svg>
+                <p class="text-xl font-bold text-gray-800">Lurus terus</p>
+                <!-- Distance -->
+                <p class="text-2xl font-bold text-blue-600 mt-2" id="distance" >...</p>
+            </div>
+
+            <!-- Screen 5 -->
+            <div id="screen-5" class="hidden">
+                <div class="flex items-end justify-center gap-3 mb-8 h-32">
+                    <div class="w-10 h-20 bg-blue-600 rounded-lg"></div>
+                    <div class="w-10 h-24 bg-blue-600 rounded-lg"></div>
+                    <div class="w-10 h-28 bg-blue-600 rounded-lg"></div>
+                    <div class="w-10 h-12 bg-gray-400 rounded-lg"></div>
+                </div>
+                <p class="text-xl font-bold text-gray-800">Ada tangga ke atas di depan anda</p>
+            </div>
+
+            <!-- Screen 6 -->
+            <div id="screen-6" class="hidden w-full">
+                <p class="text-lg font-bold text-gray-800 mb-2">Anda telah sampai</p>
+                <p class="text-2xl font-bold text-gray-800 mb-6">Halte Blok M</p>
+                <p class="text-lg font-bold text-gray-800 mb-6">Lanjut ke Fasilitas Halte?</p>
+
+                <div class="space-y-3">
+                    <button onclick="handleFacilityClick()" class="w-full bg-white hover:bg-gray-100 text-gray-800 font-bold py-4 px-4 rounded-2xl transition-colors shadow">
+                        • Toilet
+                    </button>
+                    <button onclick="handleFacilityClick()" class="w-full bg-white hover:bg-gray-100 text-gray-800 font-bold py-4 px-4 rounded-2xl transition-colors shadow">
+                        • Musolla
+                    </button>
+                    <button onclick="handleFacilityClick()" class="w-full bg-white hover:bg-gray-100 text-gray-800 font-bold py-4 px-4 rounded-2xl transition-colors shadow">
+                        • Koridor 1
+                    </button>
+                </div>
+            </div>
+
+            <!-- Screen 7 -->
+            <div id="screen-7" class="hidden w-full">
+                <p class="text-lg font-bold text-gray-800 mb-2">Anda telah sampai</p>
+                <p class="text-2xl font-bold text-gray-800 mb-8">Gate A</p>
+
+                <button class="w-full bg-white hover:bg-gray-100 text-gray-800 font-bold py-4 px-4 rounded-2xl transition-colors shadow mb-4 flex items-center justify-center gap-2">
+                    <span>⊙</span>
+                    <span>Navigasi via Google Maps</span>
+                </button>
+                <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-4 rounded-2xl transition-colors shadow mb-4 flex items-center justify-center gap-2">
+                    <span>✋</span>
+                    <span>Minta Bantuan</span>
+                </button>
+            </div>
+        </div>
+        <div class="space-y-3 w-full">
+            <button class="w-full bg-gradient-to-r from-gray-400 to-blue-500 hover:from-gray-500 hover:to-blue-600 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md flex flex-col items-center justify-center gap-2">
+                <img src="{% static 'images/microphone-icon.png' %}" alt="Microphone" class="w-10 h-10">
+                Akses Perintah Suara
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation script -->
+<!-- <script>
+let currentScreen = 4;
+let cycleInterval;
+let bleInterval;
+let nearTimer = null; // ⏱️ timer untuk tunggu 1 menit
+const FASTAPI_URL = "http://10.5.88.221:9000/scan"; // ganti sesuai IP FastAPI
+
+function showScreen(screenNumber) {
+    ['screen-4','screen-5','screen-6','screen-7'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+    const target = document.getElementById(`screen-${screenNumber}`);
+    if (target) target.classList.remove('hidden');
+
+    // Update jarak di screen 4
+    if(screenNumber === 4 && window.currentDistance !== undefined){
+        const el = document.getElementById('distance');
+        if (el) el.textContent = `${window.currentDistance.toFixed(2)} m`;
+    }
+
+    currentScreen = screenNumber;
+}
+
+async function fetchBLE() {
+    try {
+        const res = await fetch(FASTAPI_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        if (data.beacons && data.beacons.length > 0) {
+            const b = data.beacons[0];
+            window.currentDistance = parseFloat(b.distance_m);
+
+            const distanceElement = document.getElementById('distance');
+            if (distanceElement)
+                distanceElement.textContent = `${window.currentDistance.toFixed(2)} m`;
+
+            // Cek jika dekat (<= 0.9 m)
+            if (currentScreen === 4 && window.currentDistance <= 0.9) {
+                // Jika belum ada timer, mulai hitung 1 menit
+                if (!nearTimer) {
+                    console.log("Dekat beacon, tunggu 1 menit sebelum pindah ke screen 5...");
+                    nearTimer = setTimeout(() => {
+                        console.log("1 menit berlalu, pindah ke screen 5");
+                        showScreen(5);
+                        nearTimer = null;
+                    }, 1000); // 1 detik
+                }
+            } else {
+                // Kalau menjauh lagi, batalkan timer
+                if (nearTimer) {
+                    console.log("Jarak menjauh, batalkan timer pindah screen");
+                    clearTimeout(nearTimer);
+                    nearTimer = null;
+                }
+            }
+        }
+    } catch (err) {
+        console.error("Gagal fetch BLE:", err);
+    }
+}
+
+function startCycle() {
+    showScreen(4);
+
+    if (bleInterval) clearInterval(bleInterval);
+    bleInterval = setInterval(fetchBLE, 2000); 
+
+    if (cycleInterval) clearInterval(cycleInterval);
+    cycleInterval = setInterval(() => {
+        if (currentScreen === 5) {
+            showScreen(6);
+        } else if (currentScreen === 6) {
+            showScreen(7);
+        } else if (currentScreen === 7) {
+            clearInterval(cycleInterval);
+            clearInterval(bleInterval);
+        }
+    }, 10000);
+}
+
+function handleFacilityClick() {
+    clearInterval(cycleInterval);
+    clearInterval(bleInterval);
+    startCycle();
+}
+
+// Start cycle saat page load
+startCycle();
+</script> -->
+
+<script>
+let currentScreen = 4;
+let cycleInterval;
+let bleInterval;
+let nearTimer = null; 
+let lastSpokenRange = '';
+const FASTAPI_URL = "http://10.5.88.221:9000/scan"; // ganti sesuai IP FastAPI
+
+// -------------------- TTS --------------------
+function speak(message) {
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(message);
+        utterance.lang = 'id-ID';
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+// -------------------- Distance bands --------------------
+function checkDistance(distance) {
+    let rangeMessage = '';
+
+    if(distance > 5) rangeMessage = `jauh`;
+    else if(distance > 2) rangeMessage = `mendekati`;
+    else if(distance > 0.9) rangeMessage = `dekat`;
+    else rangeMessage = `sangat dekat`;
+
+    if(rangeMessage !== lastSpokenRange){
+        lastSpokenRange = rangeMessage;
+        let message = '';
+        switch(rangeMessage){
+            case 'jauh':
+                message = `Anda masih ${distance.toFixed(1)} meter dari halte`;
+                break;
+            case 'mendekati':
+                message = `Mendekati halte, jarak ${distance.toFixed(1)} meter`;
+                break;
+            case 'dekat':
+                message = `Dekat halte, siap memasuki area`;
+                break;
+            case 'sangat dekat':
+                message = `Anda sudah sangat dekat, persiapkan diri`;
+                break;
+        }
+        speak(message);
+    }
+}
+
+// -------------------- Screens --------------------
+function showScreen(screenNumber) {
+    ['screen-4','screen-5','screen-6','screen-7'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+    const target = document.getElementById(`screen-${screenNumber}`);
+    if (target) target.classList.remove('hidden');
+
+    currentScreen = screenNumber;
+
+    // Update distance on screen 4
+    if(screenNumber === 4 && window.currentDistance !== undefined){
+        const el = document.getElementById('distance');
+        if (el) el.textContent = `${window.currentDistance.toFixed(2)} m`;
+    }
+
+    // TTS per screen
+    switch(screenNumber){
+        case 4:
+            if(window.currentDistance !== undefined){
+                checkDistance(window.currentDistance);
+            }
+            break;
+        case 5:
+            speak("Terdapat tangga ke atas di depan Anda");
+            break;
+        case 6:
+            speak("Anda telah sampai di halte. Lanjut ke fasilitas halte?");
+            break;
+        case 7:
+            speak("Anda telah sampai di Gate A. Silakan pilih navigasi atau minta bantuan");
+            break;
+    }
+}
+
+// -------------------- BLE polling --------------------
+async function fetchBLE() {
+    try {
+        const res = await fetch(FASTAPI_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        if (data.beacons && data.beacons.length > 0) {
+            const b = data.beacons[0];
+            window.currentDistance = parseFloat(b.distance_m);
+
+            const distanceElement = document.getElementById('distance');
+            if (distanceElement)
+                distanceElement.textContent = `${window.currentDistance.toFixed(2)} m`;
+
+            checkDistance(window.currentDistance);
+
+            // Auto-advance when close
+            if (currentScreen === 4 && window.currentDistance <= 0.9) {
+                if (!nearTimer) {
+                    console.log("Dekat beacon, tunggu 1 detik sebelum pindah ke screen 5...");
+                    nearTimer = setTimeout(() => {
+                        console.log("Timer selesai, pindah ke screen 5");
+                        showScreen(5);
+                        nearTimer = null;
+                    }, 1000); // bisa ubah jadi 60000 untuk 1 menit
+                }
+            } else {
+                if (nearTimer) {
+                    console.log("Menjauh, batalkan timer");
+                    clearTimeout(nearTimer);
+                    nearTimer = null;
+                }
+            }
+        }
+    } catch (err) {
+        console.error("Gagal fetch BLE:", err);
+    }
+}
+
+// -------------------- Cycle --------------------
+function startCycle() {
+    showScreen(4);
+
+    if (bleInterval) clearInterval(bleInterval);
+    bleInterval = setInterval(fetchBLE, 2000);
+
+    if (cycleInterval) clearInterval(cycleInterval);
+    cycleInterval = setInterval(() => {
+        if (currentScreen === 5) {
+            showScreen(6);
+        } else if (currentScreen === 6) {
+            showScreen(7);
+        } else if (currentScreen === 7) {
+            clearInterval(cycleInterval);
+            clearInterval(bleInterval);
+        }
+    }, 10000);
+}
+
+function handleFacilityClick() {
+    clearInterval(cycleInterval);
+    clearInterval(bleInterval);
+    startCycle();
+}
+
+// -------------------- Init --------------------
+window.addEventListener('load', () => {
+    startCycle();
+});
+</script>
+
+
+
+{% endblock %}

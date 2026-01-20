@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-blue-100 to-blue-50 flex flex-col p-4">
+    <!-- Added header with user profile icon -->
+    <div class="flex justify-between items-center mb-8">
+        <a href="{% url 'main:logout' %}" class="block text-center text-blue-600 hover:text-blue-800 font-semibold transition-colors">Logout</a>
+        <a href="{% url 'main:logout' %}" class="text-2xl text-gray-700 hover:text-gray-900 transition-colors">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+        </a>
+    </div>
+
+    <!-- Logo section with eye icon -->
+    <div class="flex flex-col items-center mb-8">
+        <div class="w-24 h-24 bg-gradient-to-b from-white to-blue-500 rounded-3xl flex items-center justify-center shadow-lg mb-4">
+            <img src="{% static 'images/eye-icon.png' %}" alt="KaNet" class="w-32 h-32">
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900">KaNet</h1>
+    </div>
+
+    <!-- Messages display with improved styling -->
+    {% if messages %}
+        <div class="mb-6 space-y-2">
+            {% for message in messages %}
+                <div class="bg-blue-500 text-white p-3 rounded-lg shadow-md text-center">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Redesigned grid with icons and improved card styling -->
+    <div class="grid grid-cols-2 gap-4 mb-8 flex-grow">
+        <!-- Halte Sekitar Saya -->
+        <a href="{% url 'main:halte_sekitar' %}" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all flex flex-col items-center justify-center text-center group">
+            <div class="w-12 h-12 mb-3 text-gray-600 group-hover:text-blue-600 transition-colors flex items-center justify-center">
+                <img src="{% static 'images/location-pin-icon.png' %}" alt="Halte Sekitar Saya" class="w-10 h-10">
+            </div>
+            <h3 class="font-bold text-gray-900 text-sm">Halte Sekitar Saya</h3>
+        </a>
+
+        <!-- Jadwal Halte -->
+        <a href="{% url 'main:jadwal_halte_list' %}" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all flex flex-col items-center justify-center text-center group">
+            <div class="w-12 h-12 mb-3 text-gray-600 group-hover:text-blue-600 transition-colors flex items-center justify-center">
+                <img src="{% static 'images/jadwal-icon.png' %}" alt="Jadwal Halte" class="w-10 h-10">
+            </div>
+            <h3 class="font-bold text-gray-900 text-sm">Jadwal Halte</h3>
+        </a>
+
+        <!-- Lokasi Sekarang -->
+        <a href="{% url 'main:lokasi_sekarang' %}" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all flex flex-col items-center justify-center text-center group">
+            <div class="w-12 h-12 mb-3 text-gray-600 group-hover:text-blue-600 transition-colors flex items-center justify-center">
+                <img src="{% static 'images/location-icon.png' %}" alt="Lokasi Sekarang" class="w-10 h-10">
+            </div>
+            <h3 class="font-bold text-gray-900 text-sm">Lokasi Sekarang</h3>
+        </a>
+
+        <!-- Feedback -->
+        <a href="{% url 'main:feedback' %}" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all flex flex-col items-center justify-center text-center group">
+            <div class="w-12 h-12 mb-3 text-gray-600 group-hover:text-blue-600 transition-colors flex items-center justify-center">
+                 <img src="{% static 'images/feedback-icon.png' %}" alt="Feedback" class="w-10 h-10">
+            </div>
+            <h3 class="font-bold text-gray-900 text-sm">Feedback</h3>
+        </a>
+    </div>
+
+    <!-- Improved voice command button with gradient and bottom section -->
+    <div class="space-y-3">
+        <button class="w-full bg-gradient-to-r from-gray-400 to-blue-500 hover:from-gray-500 hover:to-blue-600 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md flex flex-col items-center justify-center gap-2">
+            <img src="{% static 'images/microphone-icon.png' %}" alt="Microphone" class="w-10 h-10">
+            Akses Perintah Suara
+        </button>
+    </div>
+</div>
+{% endblock %}

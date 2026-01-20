@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-blue-100 to-blue-50 flex flex-col p-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+        <a href="{% url 'main:show_main' %}" class="text-4xl font-bold text-gray-800 hover:text-gray-600 transition-colors">&lt;</a>
+        <h1 class="text-2xl font-bold text-gray-800">Halte Sekitar Saya</h1>
+        <img src="{% static 'images/location-icon.png' %}" alt="Location" class="w-8 h-8">
+    </div>
+
+    <!-- Halte List -->
+    <div class="flex-grow overflow-y-auto mb-8 space-y-4">
+        {% for halte in halte_list %}
+        <a href="{% url 'main:navigasi_halte' halte.id %}" class="block bg-white hover:shadow-lg p-6 rounded-2xl transition-all shadow-md">
+            <div class="flex gap-4">
+                <!-- Location Icon -->
+                <div class="flex-shrink-0">
+                    <img src="{% static 'images/location-pin-icon.png' %}" alt="Location" class="w-6 h-6 text-gray-800">
+                </div>
+                
+                <!-- Content -->
+                <div class="flex-grow">
+                    <h3 class="font-bold text-lg text-gray-800">{{ halte.nama }}</h3>
+                    <p class="text-gray-600 text-sm mb-3">{{ halte.jarak }}</p>
+                    
+                    <!-- Facilities -->
+                    <div class="space-y-1">
+                        {% for fasilitas in halte.fasilitas %}
+                        <p class="text-gray-700 text-sm flex items-center gap-2">
+                            <span class="text-gray-400">•</span>
+                            {{ fasilitas }}
+                        </p>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Arrow Icon -->
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-gray-400 text-xl">&gt;</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Bottom Button -->
+    <div>
+        <!-- Updated voice command button with gradient styling -->
+        <div class="space-y-3">
+        <button class="w-full bg-gradient-to-r from-gray-400 to-blue-500 hover:from-gray-500 hover:to-blue-600 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md flex flex-col items-center justify-center gap-2">
+            <img src="{% static 'images/microphone-icon.png' %}" alt="Microphone" class="w-10 h-10">
+            Akses Perintah Suara
+        </button>
+    </div>
+    </div>
+</div>
+{% endblock %}
